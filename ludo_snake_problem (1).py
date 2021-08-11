@@ -119,9 +119,9 @@ def trace_dice_value(a,b,pl):
             if (a+x) in stair_snake:
                 if stair_snake[a+x]==b:
                     if pl:
-                        print("Snake Mil Gaya Gandu player_1")
+                        print("Snake Mil Gaya  player_1")
                     else:
-                        print("Snake Mil Gaya Gandu player_2")
+                        print("Snake Mil Gaya player_2")
                     #print("Dice Value is : ",x)
                     return x
     else:
