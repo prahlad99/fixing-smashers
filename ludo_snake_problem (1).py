@@ -84,19 +84,20 @@ class graph:
         return self.nbrs
 
 vertex = [x for x in range(1,101)]
-stair_snake = {3:20,11:28,16:35,22:37,26:10,39:5,51:6,49:67,54:36,
+stair_e = {3:20,11:28,16:35,22:37,26:10,39:5,51:6,49:67,54:36,
               56:1,57:76,60:23,61:78,73:86,75:13,90:48,88:91,85:59,
               83:45,81:98,92:25,97:66,99:63,52:71}
 stair = {3:20,11:28,16:35,22:37,49:67,61:78,73:86,88:91,81:98}
 
 edges = set()
+
 for x in vertex:
-    if x not in stair_snake:
+    if x not in stair_e:
         for y in range(1,7):
             r =x+y
             if r<101:
-                if (x+y) in stair_snake:
-                    edges.add((x,stair_snake[x+y])) 
+                if (x+y) in stair_e:
+                    edges.add((x,stair_e[x+y])) 
                 else:
                     edges.add((x,x+y))
 
@@ -106,32 +107,32 @@ p = graph(vertex,edges,True) # creating ludo of size 100
 def trace_dice_value(a,b,pl):
     if b-a>6:  # for stair
         for x in range(1,7):
-            if (a+x) in stair_snake:
-                if stair_snake[a+x]==b:
+            if (a+x) in stair_e:
+                if stair_e[a+x]==b:
                     if pl:
                         print("Stair Found for player_1")
                     else:
                         print("Stair Found for player_2")
                     #print("Dice Value is : ",x)
                     return x
-    elif a>b: # for snake bite
+    elif a>b: # for e bite
         for x in range(1,7):
-            if (a+x) in stair_snake:
-                if stair_snake[a+x]==b:
+            if (a+x) in stair_e:
+                if stair_e[a+x]==b:
                     if pl:
-                        print("Snake Mil Gaya  player_1")
+                        print("player_1 got snake bite")
                     else:
-                        print("Snake Mil Gaya player_2")
+                        print("player_2 got snake bite")
                     #print("Dice Value is : ",x)
                     return x
     else:
         #print("Dice Value is : ",b-a)
         return b-a
 
-def find_snake(starting_point , ending_point):
+def find_e(starting_point , ending_point):
     for x in range(starting_point,ending_point+1):
-        if x in stair_snake:
-            if stair_snake[x] < x:
+        if x in stair_e:
+            if stair_e[x] < x:
                 return x
     return False
 
@@ -158,14 +159,14 @@ def get_targeted_move_for_sanke_bite(p,player_2):
         #print("starting_point_random : " , starting_point_random)
         #print("cheating_range_random : " , cheating_range_random)
         #print("end_point_random : " , end_point_random)
-        pq =  find_snake(starting_point_random,end_point_random)
-        #print("value where snake is present : ",pq)
+        pq =  find_e(starting_point_random,end_point_random)
+        #print("value where e is present : ",pq)
         while pq==False:
             #print("running")
             end_point_random +=1
-            pq =  find_snake(starting_point_random,end_point_random)
+            pq =  find_e(starting_point_random,end_point_random)
         target = pq - player_2
-        #print("target value for snake bite : ",target)
+        #print("target value for e bite : ",target)
         if target>6:
             #print("running target condition")
             move  = random.choice(list(p.nbrs[player_2]))
@@ -179,7 +180,7 @@ def get_targeted_move_for_sanke_bite(p,player_2):
                 target = pq - move
                 return (target ,move)
         else:
-            return (False , stair_snake[player_2+target])
+            return (False , stair_e[player_2+target])
 
 def generate_cheating_size(player_position):
     if player_position <10:
@@ -194,12 +195,12 @@ def generate_cheating_size(player_position):
 def create_cheating_queue(k,player):
     count = 8
   
-    size = generate_cheating_size(player)
+    size = generate_cheating_size(player) # used to generate lowest queue size
     while count>size:
         targeted_list = []
         count =1
         #print("starting***********again")
-        kl = get_targeted_move_for_sanke_bite(p,player)
+        kl = get_targeted_move_for_sanke_bite(p,player) # used for getting e bite
         if kl[0]==False and kl[1] == False:
             return False
         targeted_list.append(kl)
@@ -272,10 +273,28 @@ def start_playing(p:"ludo",cheating,probability,range_to_apply_probability): # f
                         print("cheating with targeted move : ",target_move)
                   
             
-probability = [False , False , False , False , False ,True ,False ,False , False , False]
-range_ = 10
-start_playing(p,True,probability,range_)
-#print(p.nbrs[98])kha busy hai
+probability = [False , False, False , False , False ,False ,False ,False , False , False]
+range_= 10
+def ask():
+    while True:
+        print("1.)Cheat_mode")
+        print("2.)Fair_mode")
+        a = int(input())
+        if a==1:
+            print("->Give Probability")
+            k = int(input())
+            for x in range(k):
+                probability[x] = True
+            start_playing(p,True,probability,range_)
+            exit()
+        elif a== 2:
+            play_fair(p)
+            exit()
+        else:
+            print("Invalid Input")
+            
+ask()
+
 
 
 
